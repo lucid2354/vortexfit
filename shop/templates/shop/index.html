@@ -1,0 +1,896 @@
+{% load shop_extras %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vortex Fit — спортивное питание и БАДы</title>
+<meta name="description" content="Интернет-магазин спортивного питания и БАДов. Протеин, креатин, BCAA, витамины. Доставка по Узбекистану 1–3 дня.">
+<meta property="og:title" content="Vortex Fit — спортивное питание и БАДы">
+<meta property="og:type" content="website">
+<style>
+/* Воронка Vortex Fit */
+.vxf-root, .vxf-root * { box-sizing: border-box; }
+.vxf-root input, .vxf-root textarea, .vxf-root select { font: inherit; }
+
+.vxf-root{
+  --vxf-lime:#c8ff2e;
+  --vxf-lime-dark:#a6e000;
+  --vxf-orange:#ff6a1a;
+  --vxf-orange-dark:#e8560c;
+  --vxf-ink:#0d0f0a;
+  --vxf-ink-2:#171a12;
+  --vxf-ink-3:#23271b;
+  --vxf-paper:#f4f6ee;
+  --vxf-muted:#a9b199;
+  --font-head:'DrukTextWideTT','Inter','Arial Narrow',Impact,sans-serif;
+  --font-body:'Inter',-apple-system,'Segoe UI',Arial,sans-serif;
+  font-family:var(--font-body);
+  color:var(--vxf-paper);
+  background:var(--vxf-ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---- Общие утилиты ---- */
+.vxf-wrap{width:min(1240px,100% - 40px);margin:0 auto;}
+.vxf-sec-title{
+  font-family:var(--font-head);
+  font-weight:700;
+  text-transform:uppercase;
+  line-height:0.94;
+  letter-spacing:-0.015em;
+  margin:0;
+}
+.vxf-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-body);
+  font-weight:700;font-size:13px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--vxf-lime);margin:0 0 22px;
+}
+.vxf-eyebrow::before{content:"";width:34px;height:3px;background:var(--vxf-orange);display:block;}
+.vxf-lead{
+  font-size:clamp(16px,1.4vw,19px);
+  line-height:1.6;color:var(--vxf-muted);
+  max-width:56ch;text-wrap:pretty;margin:0;
+}
+
+/* ---- Кнопки ---- */
+.vxf-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  text-decoration:none;cursor:pointer;border:0;
+  background:var(--vxf-lime);color:var(--vxf-ink);
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;
+  letter-spacing:0.02em;
+  padding:19px 40px;border-radius:4px;
+  transition:transform .28s cubic-bezier(.2,.9,.3,1), background .28s, box-shadow .28s;
+  box-shadow:0 0 0 rgba(200,255,46,0);
+}
+.vxf-btn:hover{background:var(--vxf-lime-dark);transform:translateY(-3px);box-shadow:0 14px 34px -12px rgba(200,255,46,.65);}
+.vxf-btn--orange{background:var(--vxf-orange);color:#fff;}
+.vxf-btn--orange:hover{background:var(--vxf-orange-dark);box-shadow:0 14px 34px -12px rgba(255,106,26,.65);}
+.vxf-btn--ghost{
+  background:transparent;color:var(--vxf-paper);
+  box-shadow:inset 0 0 0 2px rgba(244,246,238,.25);
+}
+.vxf-btn--ghost:hover{box-shadow:inset 0 0 0 2px var(--vxf-lime);color:var(--vxf-lime);background:transparent;transform:translateY(-3px);}
+
+/* =============== ШАПКА =============== */
+.vxf-header{
+  position:fixed;inset:0 0 auto 0;z-index:60;
+  padding:14px 0;
+  transition:background .3s,padding .3s;
+}
+.vxf-header__bar{display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.vxf-header.is-stuck{background:rgba(13,15,10,.92);backdrop-filter:blur(12px);padding:8px 0;border-bottom:1px solid rgba(200,255,46,.15);}
+.vxf-logo{
+  font-family:var(--font-head);font-weight:700;font-size:24px;letter-spacing:-0.01em;
+  color:var(--vxf-paper);text-decoration:none;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.vxf-logo__dot{width:12px;height:12px;background:var(--vxf-orange);border-radius:50%;}
+.vxf-logo em{font-style:normal;color:var(--vxf-lime);}
+.vxf-nav{display:flex;align-items:center;gap:30px;}
+.vxf-nav a{
+  color:var(--vxf-paper);text-decoration:none;font-size:14px;font-weight:600;
+  transition:color .2s;
+}
+.vxf-nav a:hover{color:var(--vxf-lime);}
+.vxf-header__cta{padding:12px 22px;font-size:13px;}
+.vxf-burger{display:none;background:none;border:0;cursor:pointer;padding:10px;}
+.vxf-burger span{display:block;width:26px;height:3px;background:var(--vxf-lime);margin:5px 0;transition:transform .3s,opacity .3s;}
+
+/* =============== БЛОК 1 — ГЕРОЙ =============== */
+.vxf-hero{
+  position:relative;
+  min-height:100svh;
+  display:flex;align-items:center;
+  padding:150px 0 70px;
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 15%, rgba(255,106,26,.28), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(200,255,46,.16), transparent 60%),
+    var(--vxf-ink);
+  overflow:hidden;
+}
+.vxf-hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(244,246,238,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(244,246,238,.045) 1px,transparent 1px);
+  background-size:64px 64px;
+  pointer-events:none;
+}
+.vxf-hero__grid{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;}
+.vxf-hero__title{
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;
+  font-size:clamp(46px,7.4vw,108px);
+  line-height:0.92;letter-spacing:-0.03em;
+  margin:0 0 28px;color:var(--vxf-paper);
+}
+.vxf-hero__title .vxf-mark{
+  background:linear-gradient(180deg,var(--vxf-lime) 0%,var(--vxf-orange) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.vxf-hero__lead{margin-bottom:40px;}
+.vxf-hero__actions{display:flex;flex-wrap:wrap;gap:18px;align-items:center;}
+.vxf-hero__note{font-size:13px;color:var(--vxf-muted);max-width:200px;line-height:1.45;}
+.vxf-hero__stats{
+  display:flex;flex-wrap:wrap;gap:44px;margin-top:56px;
+  padding-top:34px;border-top:1px solid rgba(244,246,238,.14);
+}
+.vxf-stat__num{
+  font-family:var(--font-head);font-weight:700;font-size:clamp(30px,3.4vw,46px);
+  line-height:1;color:var(--vxf-lime);
+}
+.vxf-stat__num--orange{color:var(--vxf-orange);}
+.vxf-stat__label{font-size:13px;color:var(--vxf-muted);margin-top:8px;max-width:150px;line-height:1.4;}
+
+/* Герой-карточка */
+.vxf-hero__card{
+  position:relative;background:var(--vxf-ink-2);border-radius:18px;overflow:hidden;
+  transform:rotate(2deg);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.7);
+}
+.vxf-hero__card img{width:100%;height:520px;object-fit:cover;display:block;filter:contrast(1.08) saturate(1.1);}
+.vxf-hero__card-badge{
+  position:absolute;left:20px;top:20px;
+  background:var(--vxf-orange);color:#fff;
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;
+  padding:10px 16px;border-radius:4px;font-size:14px;
+}
+.vxf-hero__card-tag{
+  position:absolute;right:20px;bottom:20px;
+  background:var(--vxf-lime);color:var(--vxf-ink);
+  font-weight:700;font-size:13px;padding:9px 15px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;
+}
+
+/* Бегущая строка */
+.vxf-marquee{
+  background:var(--vxf-lime);color:var(--vxf-ink);
+  padding:18px 0;overflow:hidden;white-space:nowrap;
+  transform:rotate(-1.2deg) scale(1.02);
+  position:relative;z-index:2;
+}
+.vxf-marquee--down{background:var(--vxf-orange);color:#fff;transform:rotate(1.2deg) scale(1.02);}
+.vxf-marquee__track{display:inline-block;animation:vxfScroll 24s linear infinite;}
+.vxf-marquee--rev .vxf-marquee__track{animation-direction:reverse;}
+.vxf-marquee__track span{
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;
+  font-size:clamp(16px,1.8vw,22px);padding:0 12px;
+}
+.vxf-marquee__track .vxf-star{color:var(--vxf-orange);}
+@keyframes vxfScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* =============== БЛОК 2 — КАТАЛОГ =============== */
+.vxf-catalog{background:var(--vxf-paper);color:var(--vxf-ink);padding:110px 0 120px;}
+.vxf-catalog .vxf-eyebrow{color:var(--vxf-orange-dark);}
+.vxf-catalog .vxf-eyebrow::before{background:var(--vxf-ink);}
+.vxf-sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:60px;}
+.vxf-catalog__title{font-size:clamp(36px,5.2vw,72px);color:var(--vxf-ink);}
+.vxf-catalog__title span{color:var(--vxf-orange);}
+.vxf-catalog__sub{max-width:340px;font-size:16px;line-height:1.6;color:#555c48;margin:0;}
+.vxf-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;}
+.vxf-card{
+  background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 6px 24px -10px rgba(13,15,10,.16);
+  transition:transform .35s cubic-bezier(.2,.9,.3,1),box-shadow .35s;
+  position:relative;
+}
+.vxf-card:hover{transform:translateY(-10px);box-shadow:0 30px 60px -18px rgba(13,15,10,.28);}
+.vxf-card__badge{
+  position:absolute;top:16px;left:16px;z-index:2;
+  background:var(--vxf-orange);color:#fff;font-size:12px;font-weight:700;
+  padding:6px 12px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;
+}
+.vxf-card__img{
+  position:relative;height:250px;overflow:hidden;
+  background:radial-gradient(circle at 50% 60%,#2c3222,#151810);
+}
+.vxf-card__img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.9,.3,1);}
+.vxf-card:hover .vxf-card__img img{transform:scale(1.07);}
+.vxf-card__body{padding:26px 24px 28px;display:flex;flex-direction:column;flex:1;}
+.vxf-card__type{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--vxf-orange-dark);margin-bottom:10px;}
+.vxf-card__name{
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;
+  font-size:21px;line-height:1.06;margin:0 0 12px;color:var(--vxf-ink);
+}
+.vxf-card__descr{font-size:14px;line-height:1.55;color:#5b624d;margin:0 0 20px;flex:1;}
+.vxf-card__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #e6e9dd;padding-top:18px;}
+.vxf-card__price{font-family:var(--font-head);font-weight:700;font-size:24px;color:var(--vxf-ink);}
+.vxf-card__price small{font-size:13px;color:#8a9178;font-weight:500;}
+.vxf-card__btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--vxf-lime);color:var(--vxf-ink);text-decoration:none;
+  font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:13px;
+  padding:13px 18px;border-radius:4px;white-space:nowrap;
+  transition:background .25s,transform .25s;
+}
+.vxf-card__btn:hover{background:var(--vxf-orange);color:#fff;transform:translateY(-2px);}
+
+/* =============== БЛОК 3 — ПРЕИМУЩЕСТВА =============== */
+.vxf-benefits{background:var(--vxf-ink);padding:110px 0;}
+.vxf-benefits__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:2px;background:rgba(244,246,238,.1);border-radius:18px;overflow:hidden;margin-top:56px;}
+.vxf-benefit{
+  background:var(--vxf-ink);padding:44px 34px;
+  transition:background .35s;
+  position:relative;overflow:hidden;
+}
+.vxf-benefit::after{
+  content:"";position:absolute;left:0;bottom:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--vxf-lime),var(--vxf-orange));
+  transition:width .4s cubic-bezier(.2,.9,.3,1);
+}
+.vxf-benefit:hover{background:var(--vxf-ink-2);}
+.vxf-benefit:hover::after{width:100%;}
+.vxf-benefit__icon{width:52px;height:52px;margin-bottom:24px;display:flex;align-items:center;justify-content:center;background:rgba(200,255,46,.1);border-radius:12px;}
+.vxf-benefit__icon img{width:28px;height:28px;filter:invert(92%) sepia(28%) saturate(700%) hue-rotate(20deg);}
+.vxf-benefit:nth-child(even) .vxf-benefit__icon{background:rgba(255,106,26,.12);}
+.vxf-benefit:nth-child(even) .vxf-benefit__icon img{filter:invert(56%) sepia(96%) saturate(3000%) hue-rotate(345deg);}
+.vxf-benefit__title{font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:19px;margin:0 0 12px;color:var(--vxf-paper);}
+.vxf-benefit__text{font-size:15px;line-height:1.6;color:var(--vxf-muted);margin:0;}
+.vxf-benefits__title{font-size:clamp(34px,4.6vw,64px);}
+.vxf-benefits__title span{color:var(--vxf-lime);}
+
+/* =============== БЛОК 4 — ОТЗЫВЫ =============== */
+.vxf-reviews{background:var(--vxf-ink-2);padding:110px 0;position:relative;overflow:hidden;}
+.vxf-reviews::before{
+  content:"VF";position:absolute;right:-30px;top:40px;
+  font-family:var(--font-head);font-weight:700;font-size:clamp(200px,30vw,420px);
+  line-height:1;color:rgba(200,255,46,.035);pointer-events:none;user-select:none;
+}
+.vxf-reviews__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:56px;position:relative;}
+.vxf-review{
+  background:var(--vxf-ink);border:1px solid rgba(244,246,238,.1);border-radius:16px;
+  padding:34px 30px;display:flex;flex-direction:column;gap:20px;
+  transition:border-color .3s,transform .3s;
+}
+.vxf-review:hover{border-color:rgba(200,255,46,.45);transform:translateY(-6px);}
+.vxf-review__stars{color:var(--vxf-orange);font-size:18px;letter-spacing:3px;}
+.vxf-review__text{font-size:15.5px;line-height:1.65;color:#dfe4d5;margin:0;flex:1;text-wrap:pretty;}
+.vxf-review__text b{color:var(--vxf-lime);font-weight:600;}
+.vxf-review__author{display:flex;align-items:center;gap:14px;border-top:1px solid rgba(244,246,238,.1);padding-top:20px;}
+.vxf-review__avatar{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--vxf-lime);}
+.vxf-review__avatar img{width:100%;height:100%;object-fit:cover;}
+.vxf-review__name{font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:15px;color:var(--vxf-paper);}
+.vxf-review__role{font-size:12.5px;color:var(--vxf-muted);margin-top:4px;}
+
+/* =============== БЛОК 5 — ФОРМА =============== */
+.vxf-cta{background:var(--vxf-paper);padding:110px 0;color:var(--vxf-ink);}
+.vxf-cta__grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.vxf-cta__title{font-size:clamp(34px,4.6vw,64px);color:var(--vxf-ink);margin-bottom:24px;}
+.vxf-cta__title span{color:var(--vxf-orange);}
+.vxf-cta__list{list-style:none;padding:0;margin:30px 0 0;display:flex;flex-direction:column;gap:14px;}
+.vxf-cta__list li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.5;color:#454b3a;}
+.vxf-cta__list li::before{
+  content:"";width:22px;height:22px;flex-shrink:0;margin-top:2px;border-radius:50%;
+  background:var(--vxf-lime);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d0f0a' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size:13px;background-repeat:no-repeat;background-position:center;
+}
+.vxf-form{
+  background:var(--vxf-ink);border-radius:20px;padding:46px 42px;
+  box-shadow:0 30px 70px -25px rgba(13,15,10,.45);
+  font-family:var(--font-body);
+}
+.vxf-form__title{font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:24px;color:var(--vxf-paper);margin:0 0 10px;}
+.vxf-form__sub{font-size:14px;color:var(--vxf-muted);margin:0 0 30px;line-height:1.55;}
+.vxf-field{margin-bottom:18px;}
+.vxf-field label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vxf-lime);margin-bottom:8px;}
+.vxf-field input,.vxf-field select{
+  width:100%;padding:15px 16px;border-radius:6px;
+  background:var(--vxf-ink-3);border:1px solid rgba(244,246,238,.14);
+  color:var(--vxf-paper);font-size:15px;
+  transition:border-color .25s,box-shadow .25s;
+  -webkit-appearance:none;appearance:none;
+}
+.vxf-field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c8ff2e' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;background-size:18px;
+}
+.vxf-field input::placeholder{color:#7f876e;}
+.vxf-field input:focus,.vxf-field select:focus{outline:none;border-color:var(--vxf-lime);box-shadow:0 0 0 3px rgba(200,255,46,.15);}
+.vxf-field.is-error input{border-color:var(--vxf-orange);}
+.vxf-form__submit{width:100%;margin-top:8px;justify-content:center;}
+.vxf-form__privacy{font-size:12px;color:#7f876e;margin:16px 0 0;line-height:1.5;text-align:center;}
+.vxf-form__success{
+  display:none;text-align:center;padding:20px 0;
+}
+.vxf-form__success.is-on{display:block;}
+.vxf-form__success-icon{
+  width:70px;height:70px;margin:0 auto 22px;border-radius:50%;
+  background:var(--vxf-lime);display:flex;align-items:center;justify-content:center;
+}
+.vxf-form__success-icon svg{width:34px;height:34px;stroke:var(--vxf-ink);}
+.vxf-form__success h3{font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:22px;color:var(--vxf-lime);margin:0 0 10px;}
+.vxf-form__success p{font-size:14px;color:var(--vxf-muted);line-height:1.55;margin:0;}
+.vxf-form.is-sent .vxf-form__body{display:none;}
+
+/* =============== БЛОК 6 — ПОДВАЛ =============== */
+.vxf-footer{background:var(--vxf-ink);border-top:1px solid rgba(244,246,238,.1);padding:80px 0 0;}
+.vxf-footer__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;margin-bottom:60px;}
+.vxf-footer__logo{font-size:28px;margin-bottom:18px;}
+.vxf-footer__about{font-size:15px;line-height:1.65;color:var(--vxf-muted);max-width:340px;margin:0 0 24px;}
+.vxf-footer__socials{display:flex;gap:12px;}
+.vxf-footer__socials a{
+  width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--vxf-ink-3);color:var(--vxf-paper);text-decoration:none;font-size:12px;font-weight:700;
+  transition:background .25s,color .25s,transform .25s;
+}
+.vxf-footer__socials a:hover{background:var(--vxf-orange);color:#fff;transform:translateY(-3px);}
+.vxf-footer__col-title{font-family:var(--font-head);font-weight:700;text-transform:uppercase;font-size:15px;color:var(--vxf-lime);margin:0 0 20px;}
+.vxf-footer__links{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;}
+.vxf-footer__links a{color:var(--vxf-paper);text-decoration:none;font-size:14.5px;opacity:.82;transition:opacity .2s,color .2s,padding-left .2s;}
+.vxf-footer__links a:hover{opacity:1;color:var(--vxf-lime);padding-left:5px;}
+.vxf-footer__contacts li{color:var(--vxf-paper);font-size:14.5px;line-height:1.5;}
+.vxf-footer__contacts a{color:var(--vxf-paper);text-decoration:none;}
+.vxf-footer__contacts a:hover{color:var(--vxf-lime);}
+.vxf-footer__copy{
+  border-top:1px solid rgba(244,246,238,.1);padding:26px 0;
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;
+  font-size:13px;color:var(--vxf-muted);
+}
+.vxf-footer__copy span{opacity:.8;}
+
+
+/* ---- Динамический каталог ---- */
+.vxf-card__img img + img{position:absolute;inset:0;opacity:0;transition:opacity .45s ease;}
+.vxf-card:hover .vxf-card__img img + img{opacity:1;}
+.vxf-card__variant{
+  width:100%;margin:0 0 16px;padding:11px 12px;border-radius:6px;font-size:14px;
+  border:1px solid #d9dccf;background:#f4f6ee;color:var(--vxf-ink);
+}
+.vxf-card__variant:focus{outline:2px solid var(--vxf-lime-dark);outline-offset:1px;}
+.vxf-card__old{font-family:var(--font-body);font-size:14px;font-weight:500;color:#8a9178;margin-left:8px;}
+.vxf-card__old[hidden]{display:none;}
+.vxf-card__stock{font-size:12px;font-weight:700;color:#3d8a1f;margin:-8px 0 16px;letter-spacing:.04em;text-transform:uppercase;}
+.vxf-card__stock.is-out{color:var(--vxf-orange-dark);}
+.vxf-empty{grid-column:1/-1;text-align:center;color:#5b624d;font-size:17px;padding:40px 0;}
+.vxf-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+.vxf-field__error{font-size:12.5px;color:var(--vxf-orange);margin-top:6px;min-height:0;}
+.vxf-form__status{font-size:13.5px;color:var(--vxf-orange);margin:4px 0 12px;line-height:1.5;}
+.vxf-form__submit[disabled]{opacity:.6;cursor:wait;transform:none;}
+
+/* =============== АНИМАЦИЯ ПОЯВЛЕНИЯ =============== */
+.vxf-anim{opacity:0;transform:translateY(30px);transition:opacity .7s ease-out,transform .7s cubic-bezier(.2,.9,.3,1);}
+.vxf-anim.is-in{opacity:1;transform:none;}
+
+/* =============== АДАПТИВ =============== */
+@media (max-width:1100px){
+  .vxf-nav{display:none;}
+  .vxf-burger{display:block;}
+  .vxf-hero__grid{grid-template-columns:1fr;gap:50px;}
+  .vxf-hero__card{transform:none;max-width:520px;margin:0 auto;}
+  .vxf-cta__grid{grid-template-columns:1fr;gap:40px;}
+  .vxf-footer__grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:820px){
+  .vxf-footer__grid{grid-template-columns:1fr;gap:40px;}
+  .vxf-hero__stats{gap:30px;}
+  .vxf-form{padding:36px 26px;}
+}
+@media (max-width:640px){
+  .vxf-wrap{width:calc(100% - 32px);}
+  .vxf-hero{padding:130px 0 60px;}
+  .vxf-catalog,.vxf-benefits,.vxf-reviews,.vxf-cta{padding:80px 0;}
+  .vxf-header__cta{display:none;}
+  .vxf-hero__card img{height:380px;}
+  .vxf-card__img{height:220px;}
+  .vxf-hero__stats{gap:26px;}
+  .vxf-stat{flex:1 1 40%;}
+  .vxf-btn{padding:17px 28px;width:100%;}
+  .vxf-hero__note{max-width:none;}
+  .vxf-benefit{padding:34px 26px;}
+  .vxf-review{padding:28px 22px;}
+}
+@media (max-width:400px){
+  .vxf-hero__title{font-size:42px;}
+  .vxf-catalog__title{font-size:34px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vxf-anim{opacity:1;transform:none;transition:none;}
+  .vxf-marquee__track{animation:none;}
+  .vxf-card,.vxf-review,.vxf-btn,.vxf-benefit{transition:none;}
+}
+</style>
+</head>
+<body>
+
+
+
+<div class="vxf-root" id="vxfPage">
+
+  <!-- ============ ШАПКА ============ -->
+  <header class="vxf-header" id="vxfHeader" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap vxf-header__bar">
+      <a href="#vxfPage" class="vxf-logo"><span class="vxf-logo__dot"></span>Vortex<em>Fit</em></a>
+      <nav class="vxf-nav" aria-label="Основная навигация">
+        <a href="#vxfCatalog">Каталог</a>
+        <a href="#vxfBenefits">Преимущества</a>
+        <a href="#vxfReviews">Отзывы</a>
+        <a href="#vxfContacts">Контакты</a>
+      </nav>
+      <a href="#vxfCatalog" class="vxf-btn vxf-header__cta">В каталог</a>
+      <button class="vxf-burger" id="vxfBurger" aria-label="Открыть меню" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ БЛОК 1 — ГЕРОЙ ============ -->
+  <section class="vxf-hero" data-section-name="Главный экран" aria-labelledby="vxfHeroTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap vxf-hero__grid">
+      <div>
+        <span class="vxf-eyebrow">Спортивное питание и БАДы</span>
+        <h1 class="vxf-hero__title" id="vxfHeroTitle">
+          Топливо для<br>твоей <span class="vxf-mark">силы</span>
+        </h1>
+
+        <div class="vxf-hero__actions">
+          <a href="#vxfCatalog" class="vxf-btn">Выбрать продукт</a>
+          <a href="#vxfBenefits" class="vxf-btn vxf-btn--ghost">Почему мы?</a>
+          <p class="vxf-hero__note">Более 50 000 заказов и средняя оценка 4.9 из 5</p>
+        </div>
+        <div class="vxf-hero__stats">
+          <div class="vxf-stat">
+            <div class="vxf-stat__num">50к+</div>
+            <div class="vxf-stat__label">довольных спортсменов</div>
+          </div>
+          <div class="vxf-stat">
+            <div class="vxf-stat__num vxf-stat__num--orange">120+</div>
+            <div class="vxf-stat__label">товаров в каталоге</div>
+          </div>
+          <div class="vxf-stat">
+            <div class="vxf-stat__num">1–3</div>
+            <div class="vxf-stat__label">дня доставка по Узбекистану</div>
+          </div>
+        </div>
+      </div>
+      <div class="vxf-hero__card">
+        <span class="vxf-hero__card-badge">Хит продаж</span>
+        <img src="https://static.tildacdn.ink/tild3864-6432-4265-a330-383239353137/photo-1581009146145-.jpg" alt="Мускулистый мужчина поднимает штангу" loading="eager">
+        <span class="vxf-hero__card-tag">Энергия · Рост · Результат</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЕГУЩАЯ СТРОКА ============ -->
+  <div class="vxf-marquee" aria-hidden="true" data-vibeblock-unique-section="yes">
+    <div class="vxf-marquee__track">
+      <span>Протеин</span><span class="vxf-star">★</span><span>Креатин</span><span class="vxf-star">★</span>
+      <span>BCAA</span><span class="vxf-star">★</span><span>Витамины</span><span class="vxf-star">★</span>
+      <span>Энергия</span><span class="vxf-star">★</span><span>Сила</span><span class="vxf-star">★</span>
+      <span>Результат</span><span class="vxf-star">★</span>
+      <span>Протеин</span><span class="vxf-star">★</span><span>Креатин</span><span class="vxf-star">★</span>
+      <span>BCAA</span><span class="vxf-star">★</span><span>Витамины</span><span class="vxf-star">★</span>
+      <span>Энергия</span><span class="vxf-star">★</span><span>Сила</span><span class="vxf-star">★</span>
+      <span>Результат</span><span class="vxf-star">★</span>
+    </div>
+  </div>
+
+  <!-- ============ БЛОК 2 — КАТАЛОГ ============ -->
+  <section class="vxf-catalog" id="vxfCatalog" data-section-name="Каталог товаров" aria-labelledby="vxfCatalogTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap">
+      <div class="vxf-sec-head vxf-anim">
+        <div>
+          <span class="vxf-eyebrow">Ассортимент</span>
+          <h2 class="vxf-sec-title vxf-catalog__title" id="vxfCatalogTitle">Лучшее для<br>твоих <span>тренировок</span></h2>
+        </div>
+        <p class="vxf-catalog__sub">Подобрано тренерами: только проверенные бренды, сертифицированный состав и вкус, который не надоедает.</p>
+      </div>
+
+      <div class="vxf-cards">
+{% for p in products %}
+        <article class="vxf-card vxf-anim" data-card data-name="{{ p.name }}" data-tg="https://t.me/{{ tg_manager }}">
+          {% if p.badge %}<span class="vxf-card__badge">{{ p.badge }}</span>{% endif %}
+          <div class="vxf-card__img">
+            {% for im in p.imgs|slice:":2" %}<img src="{{ im.image.url }}" alt="{{ im.alt|default:p.name }}" loading="lazy">{% endfor %}
+          </div>
+          <div class="vxf-card__body">
+            {% if p.category %}<span class="vxf-card__type">{{ p.category.name }}</span>{% endif %}
+            <h3 class="vxf-card__name">{{ p.name }}</h3>
+            <p class="vxf-card__descr">{{ p.description|truncatechars:170 }}</p>
+            {% if p.vars|length > 1 %}
+            <select class="vxf-card__variant" aria-label="Вариант: вкус и фасовка">
+              {% for v in p.vars %}<option value="{{ v.pk }}" data-label="{{ v.label }}" data-price="{{ v.final_price|money }}" data-old="{% if v.price is None and p.old_price %}{{ p.old_price|money }}{% endif %}" data-stock="{{ v.stock }}"{% if v == p.default %} selected{% endif %}>{{ v.label }}{% if v.stock == 0 %} · под заказ{% endif %}</option>{% endfor %}
+            </select>
+            {% elif p.vars %}
+            <p class="vxf-card__descr" style="margin:-6px 0 14px;flex:none;font-weight:600">{{ p.default.label }}</p>
+            {% endif %}
+            <div class="vxf-card__stock{% if p.cur_stock == 0 %} is-out{% endif %}" data-stock>{{ p.stock_text }}</div>
+            <div class="vxf-card__foot">
+              <span class="vxf-card__price"><span data-price>{{ p.cur_price|money }}</span> <small>сум</small><s class="vxf-card__old" data-old{% if not p.cur_old %} hidden{% endif %}>{% if p.cur_old %}{{ p.cur_old|money }}{% endif %}</s></span>
+              <a href="{{ p.cur_url }}" class="vxf-card__btn" target="_blank" rel="noopener" data-order>Заказать в Telegram</a>
+            </div>
+          </div>
+        </article>
+{% empty %}
+        <p class="vxf-empty">Каталог скоро пополнится. Загляните позже или напишите нам в Telegram.</p>
+{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 3 — ПРЕИМУЩЕСТВА ============ -->
+  <section class="vxf-benefits" id="vxfBenefits" data-section-name="Преимущества" aria-labelledby="vxfBenefitsTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap">
+      <div class="vxf-anim">
+        <span class="vxf-eyebrow">Почему Vortex Fit</span>
+        <h2 class="vxf-sec-title vxf-benefits__title" id="vxfBenefitsTitle">Качество, которому<br><span>доверяют</span></h2>
+      </div>
+
+      <div class="vxf-benefits__grid">
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/guarantee.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Гарантия качества</h3>
+          <p class="vxf-benefit__text">Каждая партия проходит лабораторный контроль. Только сертифицированные продукты с подтверждённым составом.</p>
+        </div>
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/van_delivery_car.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Быстрая доставка</h3>
+          <p class="vxf-benefit__text">Отправляем в день заказа. Курьером по Ташкенту за 24 часа, по Узбекистану — 1–3 дня. Бесплатно от 750 000 сум.</p>
+        </div>
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/discount.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Честные цены</h3>
+          <p class="vxf-benefit__text">Работаем напрямую с производителями без посредников. Система скидок и бонусы за каждый заказ.</p>
+        </div>
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/recycle_eco_leaf.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Чистый состав</h3>
+          <p class="vxf-benefit__text">Без запрещённых добавок и лишнего сахара. Прозрачные этикетки: вы точно знаете, что принимаете.</p>
+        </div>
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/win_pedestal.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Экспертная поддержка</h3>
+          <p class="vxf-benefit__text">Нутрициологи помогут собрать стек под ваши цели: массонабор, сушка или общая форма.</p>
+        </div>
+        <div class="vxf-benefit vxf-anim">
+          <div class="vxf-benefit__icon"><img src="https://static.tildacdn.ink/lib/icons/tilda/phone_contact_call_ring.svg" alt="" aria-hidden="true"></div>
+          <h3 class="vxf-benefit__title">Всегда на связи</h3>
+          <p class="vxf-benefit__text">Поддержка 7 дней в неделю с 9:00 до 22:00. Ответим на вопросы по составу и приёму добавок.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 4 — ОТЗЫВЫ ============ -->
+  <section class="vxf-reviews" id="vxfReviews" data-section-name="Отзывы клиентов" aria-labelledby="vxfReviewsTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap">
+      <div class="vxf-anim">
+        <span class="vxf-eyebrow">Реальные отзывы</span>
+        <h2 class="vxf-sec-title vxf-benefits__title" id="vxfReviewsTitle">Что говорят<br><span>наши клиенты</span></h2>
+      </div>
+
+      <div class="vxf-reviews__grid">
+        <article class="vxf-review vxf-anim">
+          <div class="vxf-review__stars" aria-label="Оценка 5 из 5">★★★★★</div>
+          <p class="vxf-review__text">Заказывал <b>Whey</b> и <b>Creatine</b> — пришло за два дня, упаковано идеально. За месяц на креатине прибавил 15 ккг в жиме, вкус протеина отличный, без химии. Однозначно магазин №1.</p>
+          <div class="vxf-review__author">
+            <div class="vxf-review__avatar"><img src="https://static.tildacdn.ink/tild6563-6130-4565-b830-666539313132/photo-1578924608828-.jpg" alt="Андрей, клиент магазина" loading="lazy"></div>
+            <div>
+              <div class="vxf-review__name">Андрей</div>
+              <div class="vxf-review__role">пауэрлифтинг, 3 года опыта</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="vxf-review vxf-anim">
+          <div class="vxf-review__stars" aria-label="Оценка 5 из 5">★★★★★</div>
+          <p class="vxf-review__text">Впервые беру БАДы онлайн и не пожалела. Консультант подобрала <b>BCAA</b> и витамины под мою сушку, восстановление заметно быстрее. Приятно, что состав полностью прозрачный.</p>
+          <div class="vxf-review__author">
+            <div class="vxf-review__avatar"><img src="https://static.tildacdn.ink/tild3135-3265-4733-b861-323131626334/photo-1574680088814-.jpg" alt="Марина, клиентка магазина" loading="lazy"></div>
+            <div>
+              <div class="vxf-review__name">Марина</div>
+              <div class="vxf-review__role">фитнес-бикини</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="vxf-review vxf-anim">
+          <div class="vxf-review__stars" aria-label="Оценка 5 из 5">★★★★★</div>
+          <p class="vxf-review__text"><b>Массонабор</b> на Vortex Mass: за 3 месяца +7 кг качественной массы. Энергии на тренировках хватает, <b>Energy</b> реально взбуждает. Уже третий заказ подряд — всё стабильно круто.</p>
+          <div class="vxf-review__author">
+            <div class="vxf-review__avatar"><img src="https://static.tildacdn.ink/tild3538-3636-4034-b265-306334363730/photo-1676655079738-.jpg" alt="Дмитрий, клиент магазина" loading="lazy"></div>
+            <div>
+              <div class="vxf-review__name">Дмитрий</div>
+              <div class="vxf-review__role">бодибилдинг, эктоморф</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 5 — ФОРМА ============ -->
+  <section class="vxf-cta" id="vxfCta" data-section-name="Форма консультации" aria-labelledby="vxfCtaTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap vxf-cta__grid">
+      <div class="vxf-anim">
+        <span class="vxf-eyebrow">Персональная подборка</span>
+        <h2 class="vxf-sec-title vxf-cta__title" id="vxfCtaTitle">Не знаешь,<br>что <span>выбрать?</span></h2>
+        <p class="vxf-lead">Оставь заявку — нутрициолог Vortex Fit бесплатно подберёт стек под твои цели: набор массы, похудение или общее самочувствие.</p>
+        <ul class="vxf-cta__list">
+          <li>Индивидуальный расчёт дозировок и схемы приёма</li>
+          <li>Подбор вкусов, которые понравятся именно тебе</li>
+          <li>Ответ в течение 15 минут в рабочее время</li>
+        </ul>
+      </div>
+
+      <div class="vxf-form vxf-anim" id="vxfForm">
+        <div class="vxf-form__body">
+          <h3 class="vxf-form__title">Заявка на консультацию</h3>
+          <p class="vxf-form__sub">Заполни форму — мы перезвоним и поможем собрать твой идеальный стек.</p>
+          <form id="vxfContactForm" name="vxfContactForm" action="/api/lead/" method="POST" novalidate>
+            <div class="vxf-field">
+              <label for="vxfName">Имя</label>
+              <input type="text" id="vxfName" name="name" maxlength="60" autocomplete="name" placeholder="Как к вам обращаться">
+              <div class="vxf-field__error" data-error="name"></div>
+            </div>
+            <div class="vxf-field">
+              <label for="vxfPhone">Телефон</label>
+              <input type="tel" id="vxfPhone" name="phone" inputmode="tel" autocomplete="tel" placeholder="+998 (__) ___-__-__">
+              <div class="vxf-field__error" data-error="phone"></div>
+            </div>
+            <div class="vxf-field">
+              <label for="vxfGoal">Цель</label>
+              <select id="vxfGoal" name="goal">
+                <option value="mass">Набор мышечной массы</option>
+                <option value="cut">Снижение веса, сушка</option>
+                <option value="strength">Рост силы и выносливости</option>
+                <option value="health">Витамины и общее самочувствие</option>
+              </select>
+            </div>
+            <input type="text" name="website" class="vxf-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="vxf-form__status" role="alert" id="vxfFormStatus"></div>
+            <button type="submit" class="vxf-btn vxf-form__submit">Получить консультацию</button>
+            <p class="vxf-form__privacy">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных</p>
+          </form>
+        </div>
+        <div class="vxf-form__success" id="vxfFormSuccess" role="status">
+          <div class="vxf-form__success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h3>Заявка отправлена!</h3>
+          <p>Спасибо! Наш нутрициолог свяжется с вами в течение 15 минут.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БЛОК 6 — ПОДВАЛ ============ -->
+  <footer class="vxf-footer" id="vxfContacts" data-section-name="Подвал сайта" aria-labelledby="vxfFooterTitle" data-vibeblock-unique-section="yes">
+    <div class="vxf-wrap">
+      <div class="vxf-footer__grid">
+        <div>
+          <div class="vxf-logo vxf-footer__logo" id="vxfFooterTitle"><span class="vxf-logo__dot"></span>Vortex<em>Fit</em></div>
+          <p class="vxf-footer__about">Интернет-магазин спортивного питания и БАДов. Помогаем спортсменам достигать целей с чистым составом, честными ценами и экспертной поддержкой.</p>
+        </div>
+
+        <div>
+          <h3 class="vxf-footer__col-title">Разделы</h3>
+          <ul class="vxf-footer__links">
+            <li><a href="#vxfCatalog">Каталог</a></li>
+            <li><a href="#vxfBenefits">Преимущества</a></li>
+            <li><a href="#vxfReviews">Отзывы</a></li>
+            <li><a href="#vxfCta">Консультация</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="vxf-footer__col-title">Контакты</h3>
+          <ul class="vxf-footer__links vxf-footer__contacts">
+            <li><a href="tel:+998777042269">+998 77 704 22 69</a></li>
+            <li><a href="mailto:info@vortexfit.uz">info@vortexfit.uz</a></li>
+            <li>Ташкент, ул. Спортивная, 15</li>
+            <li>Ежедневно с 9:00 до 22:00</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="vxf-footer__copy">
+        <span>© 2026 Vortex Fit. Все права защищены.</span>
+        <span>Не является лекарственным средством. Продукция не предназначена для диагностики или лечения.</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var root = document.getElementById('vxfPage');
+  if (!root) return;
+
+  /* ---- Шапка: фиксация при скролле ---- */
+  var header = document.getElementById('vxfHeader');
+  function onScroll(){
+    if (window.scrollY > 40) header.classList.add('is-stuck');
+    else header.classList.remove('is-stuck');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---- Мобильное меню ---- */
+  var burger = document.getElementById('vxfBurger');
+  if (burger) {
+    burger.addEventListener('click', function(){
+      var open = header.classList.toggle('nav-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var nav = header.querySelector('.vxf-nav');
+      if (nav) {
+        if (open) {
+          nav.style.display = 'flex';
+          nav.style.position = 'absolute';
+          nav.style.top = '100%';
+          nav.style.left = '0';
+          nav.style.right = '0';
+          nav.style.flexDirection = 'column';
+          nav.style.gap = '18px';
+          nav.style.background = 'rgba(13,15,10,.97)';
+          nav.style.padding = '24px 20px';
+          nav.style.borderBottom = '1px solid rgba(200,255,46,.2)';
+        } else {
+          nav.removeAttribute('style');
+        }
+      }
+    });
+    /* Закрытие меню при клике на ссылку */
+    var navLinks = header.querySelectorAll('.vxf-nav a');
+    navLinks.forEach(function(link){
+      link.addEventListener('click', function(){
+        if (header.classList.contains('nav-open')) burger.click();
+      });
+    });
+  }
+
+  /* ---- Плавный скролл по якорям ---- */
+  root.querySelectorAll('a[href^="#"]').forEach(function(anchor){
+    anchor.addEventListener('click', function(e){
+      var id = anchor.getAttribute('href');
+      if (!id || id === '#' || id.indexOf('#order:') === 0) return;
+      var target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      var top = target.getBoundingClientRect().top + window.scrollY - 70;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  });
+
+  /* ---- Появление блоков при скролле ---- */
+  var animEls = root.querySelectorAll('.vxf-anim');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    animEls.forEach(function(el){ io.observe(el); });
+  } else {
+    animEls.forEach(function(el){ el.classList.add('is-in'); });
+  }
+
+  /* ---- Каталог: смена варианта (вкус / фасовка) ---- */
+  function stockText(n){ return n <= 0 ? 'Под заказ' : (n <= 5 ? 'Осталось ' + n : 'В наличии'); }
+  root.querySelectorAll('[data-card]').forEach(function(card){
+    var sel = card.querySelector('.vxf-card__variant');
+    if (!sel) return;
+    sel.addEventListener('change', function(){
+      var o = sel.options[sel.selectedIndex];
+      var price = o.dataset.price, old = o.dataset.old, label = o.dataset.label;
+      var stock = parseInt(o.dataset.stock, 10) || 0;
+      card.querySelector('[data-price]').textContent = price;
+      var oldEl = card.querySelector('[data-old]');
+      oldEl.textContent = old || ''; oldEl.hidden = !old;
+      var st = card.querySelector('[data-stock]');
+      st.textContent = stockText(stock); st.classList.toggle('is-out', stock === 0);
+      var text = 'Здравствуйте! Хочу заказать: ' + card.dataset.name +
+                 (label ? ' (' + label + ')' : '') + ' — ' + price.replace(/\u00a0/g, ' ') + ' сум';
+      card.querySelector('[data-order]').href = card.dataset.tg + '?text=' + encodeURIComponent(text);
+    });
+  });
+
+  /* ---- Форма консультации ---- */
+  var form = document.getElementById('vxfContactForm');
+  var formWrap = document.getElementById('vxfForm');
+  var success = document.getElementById('vxfFormSuccess');
+  var statusEl = document.getElementById('vxfFormStatus');
+
+  function getCookie(name){
+    var m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  function formatPhone(v){
+    var d = v.replace(/\D/g, '');
+    if (d.indexOf('998') === 0) d = d.slice(3);
+    d = d.slice(0, 9);
+    if (!d.length) return '';
+    var out = '+998 (' + d.slice(0, 2);
+    if (d.length >= 2) out += ')';
+    if (d.length > 2) out += ' ' + d.slice(2, 5);
+    if (d.length > 5) out += '-' + d.slice(5, 7);
+    if (d.length > 7) out += '-' + d.slice(7, 9);
+    return out;
+  }
+  function setError(field, msg){
+    var box = form.querySelector('[data-error="' + field + '"]');
+    if (box) box.textContent = msg || '';
+    var input = form.elements[field];
+    if (input && input.closest) {
+      var wrap = input.closest('.vxf-field');
+      if (wrap) wrap.classList.toggle('is-error', !!msg);
+    }
+  }
+
+  if (form) {
+    var phoneInput = form.elements.phone;
+    phoneInput.addEventListener('input', function(){ phoneInput.value = formatPhone(phoneInput.value); setError('phone', ''); });
+    form.elements.name.addEventListener('input', function(){ setError('name', ''); });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      statusEl.textContent = '';
+      var name = form.elements.name.value.trim();
+      var digits = form.elements.phone.value.replace(/\D/g, '');
+      var bad = false;
+      if (name.length < 2) { setError('name', 'Введите имя'); bad = true; }
+      if (digits.length !== 12) { setError('phone', 'Введите номер полностью: +998 (XX) XXX-XX-XX'); bad = true; }
+      if (bad) return;
+
+      var btn = form.querySelector('[type="submit"]');
+      btn.disabled = true;
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          name: name, phone: form.elements.phone.value,
+          goal: form.elements.goal.value, website: form.elements.website.value
+        })
+      }).then(function(r){
+        return r.json().catch(function(){ return {}; }).then(function(data){ return { status: r.status, data: data }; });
+      }).then(function(res){
+        if (res.data.ok) {
+          formWrap.classList.add('is-sent');
+          success.classList.add('is-on');
+          return;
+        }
+        if (res.data.errors) {
+          Object.keys(res.data.errors).forEach(function(k){ setError(k, res.data.errors[k]); });
+        } else {
+          statusEl.textContent = res.data.error || 'Что-то пошло не так. Попробуйте ещё раз.';
+        }
+        btn.disabled = false;
+      }).catch(function(){
+        statusEl.textContent = 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.';
+        btn.disabled = false;
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

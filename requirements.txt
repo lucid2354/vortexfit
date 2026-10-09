@@ -1,0 +1,7 @@
+Django>=5.2,<6.1
+django-unfold>=0.50
+gunicorn>=22.0
+psycopg[binary]>=3.2
+Pillow>=10.0
+requests>=2.31
+whitenoise>=6.7

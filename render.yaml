@@ -1,0 +1,25 @@
+# Тестовый запуск на бесплатном Render: SQLite и фото на временном диске,
+# всё пропадает при перезапуске и «засыпании». Для настоящего сайта так не оставляй.
+services:
+  - type: web
+    name: vortexfit
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py makemigrations shop --noinput && python manage.py migrate --noinput && python manage.py bootstrap && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: SERVE_MEDIA
+        value: "1"
+      - key: SEED_DEMO
+        value: "1"
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
