@@ -134,7 +134,7 @@ if not DEBUG:
 # --- Telegram ---
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")
-TELEGRAM_MANAGER = env("TELEGRAM_MANAGER", "Lenali180").lstrip("@")
+TELEGRAM_MANAGER = env("TELEGRAM_MANAGER", "your_manager").lstrip("@")
 
 # --- Тема админки Unfold ---
 ORANGE = {

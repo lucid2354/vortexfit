@@ -4,3 +4,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+
+# Команда по умолчанию (Render). В docker-compose она переопределяется своей.
+CMD ["sh", "-c", "python manage.py makemigrations shop --noinput && python manage.py migrate --noinput && python manage.py bootstrap && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 60"]
